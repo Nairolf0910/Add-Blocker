@@ -1,0 +1,39 @@
+=== KURZBESCHREIBUNG (132 Zeichen max) ===
+
+Blockiert automatisch verdächtige Weiterleitungen zu Scam- und Werbeseiten. Blockierte Tabs werden sofort geschlossen.
+
+
+=== VOLLSTÄNDIGE BESCHREIBUNG ===
+
+🛡️ Redirect Guard – Dein Schutz vor unerwarteten Weiterleitungen
+
+Kennst du das? Du klickst auf einen Link und landest plötzlich auf einer Scam-Seite, einem Werbe-Popup oder einer dubiosen Domain. Redirect Guard stoppt genau das – bevor du es überhaupt merkst.
+
+✨ WAS REDIRECT GUARD TUT
+
+Sobald eine verdächtige Weiterleitung erkannt wird, schließt die Erweiterung den Tab sofort und automatisch. Keine Wartezeit, kein Klicken nötig – einfach weg.
+
+✅ SCHUTZ VOR:
+• Scam- und Phishing-Weiterleitungsketten
+• Werbenetzwerken und Click-Farms (ouo.io, linkvertise, adfly & 20+ weitere)
+• JavaScript-Weiterleitungen (location.assign, location.replace)
+• History-API-Hijacking (pushState / replaceState)
+• Verdächtigen Domain-Endungen (.top, .xyz, .click, .buzz ...)
+• Unerwünschten Popup-Tabs durch Werbeskripte
+
+🔒 100% DATENSCHUTZ:
+• Keine Datensammlung, kein Tracking, keine externen Server
+• Alle Einstellungen bleiben lokal auf deinem Gerät
+• Open Source – jeder kann den Code prüfen
+
+⚙️ EINFACH ZU BEDIENEN:
+• Ein Klick zum Aktivieren/Deaktivieren
+• 3 Empfindlichkeitsstufen (Niedrig / Mittel / Hoch)
+• Whitelist für vertrauenswürdige Domains
+• Statistiken wie viele Weiterleitungen heute blockiert wurden
+• Blockierte Seiten können auf Wunsch trotzdem geöffnet werden
+
+🚫 WIE ES FUNKTIONIERT:
+Redirect Guard überwacht jede Navigation in deinem Browser. Erkennt es ein bekanntes Scam-Muster oder eine verdächtige Weiterleitung, schließt es den Tab sofort. Wenn es der einzige offene Tab ist, wird stattdessen eine informative Blockierungsseite angezeigt.
+
+Kompatibel mit Chrome und Microsoft Edge.

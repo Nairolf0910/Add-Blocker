@@ -1,95 +1,116 @@
 # 🛡️ Redirect Guard
 
-Eine **Manifest V3 Browser-Erweiterung** für **Google Chrome** und **Microsoft Edge**, die unerwünschte Weiterleitungen zu Scam- und Werbeseiten erkennt und blockiert. Du behältst die volle Kontrolle – du entscheidest, ob eine Weiterleitung erlaubt wird oder nicht.
+> **Blocks unwanted redirects to scam, ad, and malware pages — automatically.**
+> Suspicious tabs are closed instantly. You stay in control.
+
+![Version](https://img.shields.io/badge/version-1.2.0-01696f?style=flat-square)
+![Manifest](https://img.shields.io/badge/Manifest-V3-0c4e54?style=flat-square)
+![License](https://img.shields.io/badge/license-MIT-cedcd8?style=flat-square)
+![Browser](https://img.shields.io/badge/Chrome%20%26%20Edge-compatible-01696f?style=flat-square)
 
 ---
 
-## 🚀 Features
+## ✨ What it does
 
-- **HTTP-Redirect-Erkennung** – Erkennt Redirect-Ketten über `chrome.webNavigation`
-- **JavaScript-Blocking** – Blockiert `window.open()`, `location.href`, `location.assign()`, `location.replace()`
-- **history API Schutz** – Verhindert Domain-Wechsel via `history.pushState` / `replaceState`
-- **Meta-Refresh-Blocking** – Entfernt `<meta http-equiv="refresh">` Tags
-- **Popup-Blocking** – Blockiert unerwünscht geöffnete neue Tabs
-- **Whitelist** – Vertrauenswürdige Domains immer durchlassen
-- **Statistiken** – Zählt blockierte Weiterleitungen (heute / gesamt)
-- **Ein/Aus-Schalter** – Erweiterung mit einem Klick deaktivieren
-- **3 Empfindlichkeitsstufen** – Niedrig / Mittel / Hoch
+Redirect Guard watches every navigation in your browser. The moment it detects a suspicious redirect — like a link that suddenly sends you to an ad network, a scam domain, or a click-farm — it **immediately closes the tab**. No warning page, no delay. If it’s the only open tab, it shows a clean info page instead.
 
----
-
-## 📦 Installation
-
-### Google Chrome
-1. Lade den Quellcode herunter (ZIP) oder klone das Repository
-2. Öffne `chrome://extensions/`
-3. Aktiviere **Entwicklermodus** (oben rechts)
-4. Klicke **„Entpackte Erweiterung laden"**
-5. Wähle den `Add-Blocker`-Ordner aus
-
-### Microsoft Edge
-1. Lade den Quellcode herunter (ZIP) oder klone das Repository
-2. Öffne `edge://extensions/`
-3. Aktiviere **Entwicklermodus** (links unten)
-4. Klicke **„Entpackte Erweiterung laden"**
-5. Wähle den `Add-Blocker`-Ordner aus
+**Protects against:**
+- 🚫 Scam & phishing redirect chains
+- 🚫 Adware domains (popunder networks, click farms)
+- 🚫 JavaScript-based redirects (`location.assign`, `location.replace`)
+- 🚫 History API hijacking (`pushState` / `replaceState`)
+- 🚫 Server-side redirects to suspicious TLDs (`.top`, `.xyz`, `.click` …)
+- 🚫 Unwanted popup tabs opened by ad scripts
 
 ---
 
-## 📁 Dateistruktur
+## 🚀 Installation
 
-```
-Add-Blocker/
-├── manifest.json        # Extension-Manifest (Manifest V3)
-├── background.js        # Service Worker – Redirect-Erkennung & Blockierung
-├── content.js           # Content Script – JS-Redirect-Blocking
-├── blocked.html         # Blockierungsseite mit Entscheidungs-UI
-├── blocked.js           # Logik für die Blockierungsseite
-├── popup.html           # Popup-UI für Einstellungen
-├── popup.js             # Popup-Logik
-├── test.html            # Test-Seite zur Verifikation
-├── styles/
-│   ├── blocked.css      # Styling für Blockierungsseite
-│   └── popup.css        # Styling für Popup
-└── icons/
-    ├── icon16.png
-    ├── icon48.png
-    └── icon128.png
-```
+### From Chrome Web Store *(coming soon)*
+Search for **“Redirect Guard”** in the [Chrome Web Store](https://chrome.google.com/webstore).
+
+### Manual (Developer Mode)
+
+1. Download or clone this repository
+2. Open Chrome/Edge and navigate to `chrome://extensions/`
+3. Enable **Developer Mode** (top right)
+4. Click **“Load unpacked”** and select the project folder
+5. The shield icon 🛡️ appears in your toolbar — you’re protected!
 
 ---
 
-## ⚙️ Empfindlichkeitsstufen
+## 🎮 How to use
 
-| Stufe | Verhalten |
+| Action | How |
 |---|---|
-| **Niedrig** | Nur bekannte Scam-Muster und Redirect-Ketten (wenige False Positives) |
-| **Mittel** | + Verdächtige TLDs (`.xyz`, `.top`, `.click` …) – **Standard** |
-| **Hoch** | Alle Domain-wechselnden Weiterleitungen werden blockiert |
+| Enable / Disable | Click the shield icon → toggle the switch |
+| Set sensitivity | Low / Medium / High in the popup |
+| Allow a domain | Click “Allow domain permanently” on the blocked page |
+| View stats | Popup shows today’s and total blocked count |
+| Test it | Open `test.html` from the project folder |
 
 ---
 
-## 🧪 Testen
+## ⚙️ Sensitivity Levels
 
-Öffne `test.html` im Browser nach der Installation der Erweiterung:
-1. Erweiterung in Chrome/Edge laden (siehe Installation)
-2. `test.html` per Drag & Drop in den Browser ziehen oder über `File → Open`
-3. Die Buttons auf der Test-Seite simulieren verschiedene Redirect-Typen
-4. Prüfe ob die Blockierungsseite erscheint
-
----
-
-## 🤝 Browser-Kompatibilität
-
-| Browser | Unterstützt | Getestet |
-|---|---|---|
-| Google Chrome | ✅ | ✅ |
-| Microsoft Edge | ✅ | ✅ |
-| Brave | ✅ (Chromium-basiert) | ⚠️ nicht offiziell |
-| Firefox | ❌ (benötigt Manifest V2 Port) | ❌ |
+| Level | What gets blocked |
+|---|---|
+| **Low** | Only known scam patterns & suspicious redirect chains |
+| **Medium** *(default)* | + Bad TLDs (`.top`, `.xyz`, `.click` …) |
+| **High** | + Any cross-domain redirect not on the whitelist |
 
 ---
 
-## 📄 Lizenz
+## 🔒 Privacy
 
-MIT License – frei verwendbar und anpassbar.
+**Zero data collection.** Everything runs locally on your device.
+
+- No analytics, no tracking, no external servers
+- Settings stored only in `chrome.storage.local`
+- Full source code available for inspection
+- [Privacy Policy](privacy.html)
+
+---
+
+## 📁 Project Structure
+
+```
+redirect-guard/
+├── manifest.json        # Extension config (Manifest V3)
+├── background.js        # Service worker: redirect detection & tab management
+├── content.js           # Page-level JS redirect interception
+├── popup.html/js        # Toolbar popup UI
+├── blocked.html/js      # Shown when tab cannot be closed (single tab)
+├── privacy.html         # Privacy policy
+├── test.html            # Test page to verify the extension works
+├── icons/               # icon16.png, icon48.png, icon128.png
+└── styles/              # popup.css, blocked.css
+```
+
+---
+
+## 🛠️ Development
+
+```bash
+# Clone
+git clone https://github.com/Nairolf0910/Add-Blocker.git
+cd Add-Blocker
+
+# Load in Chrome
+# chrome://extensions/ → Developer Mode → Load unpacked
+
+# After any code change:
+# chrome://extensions/ → 🔄 Reload button
+```
+
+---
+
+## 📄 License
+
+MIT License — free to use, modify and distribute.
+
+---
+
+<p align="center">
+  Made with ❤️ to keep the web safe
+</p>

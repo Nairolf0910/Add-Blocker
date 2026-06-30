@@ -1,15 +1,14 @@
 {
   "manifest_version": 3,
   "name": "Redirect Guard",
-  "version": "1.1.0",
-  "description": "Blockiert unerwünschte Weiterleitungen zu Scam- und Werbeseiten. Läuft auf Chrome & Edge. Du entscheidest, wohin du weitergeleitet wirst.",
+  "version": "1.2.0",
+  "description": "Blocks unwanted redirects to scam and ad pages automatically. Suspicious tabs are closed instantly. You decide where you go.",
   "permissions": [
     "webNavigation",
     "declarativeNetRequest",
     "storage",
     "tabs",
-    "activeTab",
-    "notifications"
+    "activeTab"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -27,6 +26,7 @@
   ],
   "action": {
     "default_popup": "popup.html",
+    "default_title": "Redirect Guard",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",

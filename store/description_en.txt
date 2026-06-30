@@ -1,0 +1,39 @@
+=== SHORT DESCRIPTION (132 chars max) ===
+
+Automatically blocks suspicious redirects to scam and ad pages. Blocked tabs are closed instantly.
+
+
+=== FULL DESCRIPTION ===
+
+🛡️ Redirect Guard – Stop Unwanted Redirects Before They Happen
+
+Ever clicked a link and ended up on a scam site, an ad popup, or a sketchy domain you never intended to visit? Redirect Guard stops exactly that — before you even notice.
+
+✨ WHAT IT DOES
+
+The moment a suspicious redirect is detected, the extension closes the tab instantly and automatically. No waiting, no clicking — it’s just gone.
+
+✅ PROTECTS AGAINST:
+• Scam & phishing redirect chains
+• Ad networks & click farms (ouo.io, linkvertise, adfly & 20+ more)
+• JavaScript-based redirects (location.assign, location.replace)
+• History API hijacking (pushState / replaceState)
+• Suspicious TLDs (.top, .xyz, .click, .buzz ...)
+• Unwanted popup tabs opened by ad scripts
+
+🔒 100% PRIVATE:
+• Zero data collection, no tracking, no external servers
+• All settings stored locally on your device only
+• Open source – inspect the code yourself
+
+⚙️ SIMPLE TO USE:
+• One click to enable/disable
+• 3 sensitivity levels (Low / Medium / High)
+• Whitelist for trusted domains
+• Stats showing how many redirects were blocked today
+• Blocked pages can still be opened if you choose to
+
+🚫 HOW IT WORKS:
+Redirect Guard monitors every navigation in your browser. When it detects a known scam pattern or suspicious redirect, it closes the tab immediately. If it’s the only open tab, a clean info page is shown instead.
+
+Compatible with Chrome and Microsoft Edge.
