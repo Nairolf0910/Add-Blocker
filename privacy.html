@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirect Guard – Datenschutzerklärung</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #0d1117; color: #e6edf3; max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem; line-height: 1.7; }
+    h1 { font-size: 1.8rem; margin-bottom: 0.5rem; color: #01696f; }
+    h2 { font-size: 1.1rem; margin: 2rem 0 0.5rem; color: #e6edf3; }
+    p, li { color: #8b949e; font-size: 0.95rem; }
+    ul { padding-left: 1.5rem; margin-top: 0.5rem; }
+    li { margin-bottom: 0.3rem; }
+    .badge { display:inline-block; background:#0c4e54; color:#cedcd8; padding:0.2rem 0.7rem; border-radius:99px; font-size:0.75rem; margin-bottom:1.5rem; }
+    hr { border:none; border-top:1px solid rgba(255,255,255,0.08); margin:2rem 0; }
+  </style>
+</head>
+<body>
+  <h1>🛡️ Redirect Guard</h1>
+  <span class="badge">Datenschutzerklärung · Stand: Juli 2025</span>
+
+  <h2>1. Keine Datensammlung</h2>
+  <p>Redirect Guard speichert, überträgt oder verkauft <strong style="color:#e6edf3">keinerlei persönliche Daten</strong>. Alle Verarbeitungen finden ausschließlich lokal auf deinem Gerät statt.</p>
+
+  <h2>2. Was lokal gespeichert wird</h2>
+  <p>Die Erweiterung speichert ausschließlich deine eigenen Einstellungen im lokalen Browser-Speicher (<code>chrome.storage.local</code>):</p>
+  <ul>
+    <li>Aktivierungs-Status (an/aus)</li>
+    <li>Empfindlichkeitsstufe (niedrig / mittel / hoch)</li>
+    <li>Deine persönliche Whitelist (Domains, die du manuell erlaubt hast)</li>
+    <li>Blockierungs-Zähler (nur lokal, nur für dich)</li>
+  </ul>
+  <p>Diese Daten verlassen deinen Browser niemals.</p>
+
+  <h2>3. Zugriffsrechte</h2>
+  <p>Die Erweiterung benötigt folgende Browser-Berechtigungen:</p>
+  <ul>
+    <li><strong style="color:#e6edf3">webNavigation</strong> – erkennt Weiterleitungen, bevor sie ausgeführt werden</li>
+    <li><strong style="color:#e6edf3">tabs</strong> – schließt blockierte Tabs automatisch</li>
+    <li><strong style="color:#e6edf3">storage</strong> – speichert deine Einstellungen lokal</li>
+    <li><strong style="color:#e6edf3">declarativeNetRequest</strong> – blockiert bekannte Werbe-Netzwerke auf Netzwerk-Ebene</li>
+  </ul>
+  <p>Keine dieser Berechtigungen wird genutzt, um Daten zu sammeln oder weiterzugeben.</p>
+
+  <h2>4. Dritte / Externe Server</h2>
+  <p>Redirect Guard kommuniziert mit <strong style="color:#e6edf3">keinen externen Servern</strong>. Es gibt keine Analytics, kein Tracking, keine Werbung.</p>
+
+  <h2>5. Open Source</h2>
+  <p>Der vollständige Quellcode ist öffentlich einsehbar auf <a href="https://github.com/Nairolf0910/Add-Blocker" style="color:#01696f">GitHub</a>. Jeder kann die Funktionsweise selbst prüfen.</p>
+
+  <hr>
+  <p style="font-size:0.8rem">Bei Fragen zur Datenschutzerklärung: Erstelle ein Issue auf GitHub.</p>
+</body>
+</html>
