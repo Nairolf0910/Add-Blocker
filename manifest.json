@@ -1,10 +1,12 @@
 {
   "manifest_version": 3,
   "name": "Redirect Guard",
-  "version": "1.0.0",
-  "description": "Blockiert unerwünschte Weiterleitungen zu Scam- und Werbeseiten. Du entscheidest, wohin du weitergeleitet wirst.",
+  "version": "1.1.0",
+  "description": "Blockiert unerwünschte Weiterleitungen zu Scam- und Werbeseiten. Läuft auf Chrome und Microsoft Edge. Du entscheidest, wohin du weitergeleitet wirst.",
   "permissions": [
     "webNavigation",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess",
     "storage",
     "tabs",
     "activeTab",
