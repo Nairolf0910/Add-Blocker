@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    width: 1280px;
+    height: 800px;
+    overflow: hidden;
+    background: #0d1117;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #e6edf3;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    grid-template-rows: 1fr;
+  }
+
+  /* ── LEFT: Popup Mockup ── */
+  .left {
+    background: #0d1117;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+    border-right: 1px solid rgba(255,255,255,0.07);
+    gap: 16px;
+  }
+
+  .browser-bar {
+    width: 100%;
+    background: #161b22;
+    border-radius: 10px 10px 0 0;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-bottom: none;
+  }
+  .dot { width:10px; height:10px; border-radius:50%; }
+  .dot.r{background:#f85149;} .dot.y{background:#d29922;} .dot.g{background:#3fb950;}
+  .url-bar {
+    flex:1; background:#0d1117; border-radius:5px;
+    padding: 3px 10px; font-size:11px; color:#8b949e;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .shield-btn {
+    width:28px; height:28px; background: linear-gradient(135deg,#0c4e54,#01696f);
+    border-radius:6px; display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 2px 8px rgba(1,105,111,0.4);
+  }
+  .shield-btn svg { width:14px; height:14px; }
+
+  .popup {
+    width: 100%;
+    background: #0d1117;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    overflow: hidden;
+  }
+
+  .popup-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 10px 14px;
+    background: #161b22;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .ph-left { display:flex; align-items:center; gap:8px; }
+  .ph-icon {
+    width:28px; height:28px;
+    background: linear-gradient(135deg,#0c4e54,#01696f);
+    border-radius:7px; display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 2px 6px rgba(1,105,111,0.35);
+    color:#fff;
+  }
+  .ph-icon svg { width:14px; height:14px; }
+  .ph-title { font-size:13px; font-weight:700; }
+  .ph-sub { font-size:10px; color:#8b949e; }
+  .toggle-on {
+    width:36px; height:20px; background:#01696f;
+    border-radius:99px; position:relative;
+    box-shadow: 0 0 8px rgba(1,105,111,0.4);
+  }
+  .toggle-on::after {
+    content:''; position:absolute;
+    width:14px; height:14px; background:#fff;
+    border-radius:50%; top:3px; right:3px;
+  }
+
+  .popup-stats {
+    display:flex; padding:10px 14px;
+    background:#161b22;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    gap:0;
+  }
+  .stat { flex:1; text-align:center; }
+  .stat-n { font-size:22px; font-weight:800; color:#01696f; line-height:1; }
+  .stat-l { font-size:9px; color:#8b949e; text-transform:uppercase; letter-spacing:.05em; margin-top:2px; }
+  .stat-div { width:1px; background:rgba(255,255,255,0.08); margin:0 4px; }
+
+  .popup-section {
+    padding:10px 14px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .ps-label { font-size:9px; font-weight:600; text-transform:uppercase; letter-spacing:.07em; color:#8b949e; margin-bottom:6px; }
+  .pills { display:flex; gap:4px; background:#161b22; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:3px; }
+  .pill { flex:1; padding:4px 0; text-align:center; font-size:10px; font-weight:600; border-radius:6px; color:#8b949e; }
+  .pill.active { background:#01696f; color:#fff; box-shadow:0 2px 6px rgba(1,105,111,0.35); }
+
+  .popup-footer {
+    padding:7px 14px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .ver { font-size:9px; color:#484f58; }
+
+  /* ── RIGHT: Feature Overview ── */
+  .right {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 40px 44px;
+    gap: 28px;
+  }
+
+  .hero {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .hero-icon {
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, #0c4e54, #01696f);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 24px rgba(1,105,111,0.4);
+    flex-shrink: 0;
+  }
+  .hero-icon svg { width: 28px; height: 28px; color: #fff; }
+  .hero h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; }
+  .hero p { font-size: 13px; color: #8b949e; margin-top: 3px; max-width: 42ch; }
+
+  .features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .feat {
+    background: #161b22;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .feat-icon {
+    width: 32px; height: 32px; flex-shrink: 0;
+    background: rgba(1,105,111,0.15);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #01696f;
+  }
+  .feat-icon svg { width: 16px; height: 16px; }
+  .feat h3 { font-size: 12px; font-weight: 700; margin-bottom: 3px; }
+  .feat p { font-size: 11px; color: #8b949e; line-height: 1.4; }
+
+  .bottom-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .badge {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(1,105,111,0.12);
+    border: 1px solid rgba(1,105,111,0.3);
+    border-radius: 99px;
+    padding: 5px 14px;
+    font-size: 11px; font-weight: 600; color: #4f98a3;
+  }
+  .badge-dot { width:7px; height:7px; background:#01696f; border-radius:50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .tags { display:flex; gap:6px; }
+  .tag {
+    background: #161b22;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 99px;
+    padding: 4px 12px;
+    font-size: 10px; color: #8b949e;
+  }
+</style>
+</head>
+<body>
+
+<!-- LEFT: Popup -->
+<div class="left">
+  <div style="width:100%">
+    <div class="browser-bar">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <div class="url-bar">chrome://newtab</div>
+      <div class="shield-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <path d="M12 2L4 5.5v6C4 16 7.4 20.5 12 22c4.6-1.5 8-6 8-10.5v-6L12 2z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/>
+        </svg>
+      </div>
+    </div>
+    <div class="popup">
+      <div class="popup-header">
+        <div class="ph-left">
+          <div class="ph-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L4 5.5v6C4 16 7.4 20.5 12 22c4.6-1.5 8-6 8-10.5v-6L12 2z"/>
+              <path stroke-linecap="round" d="M9 12l2 2 4-4"/>
+            </svg>
+          </div>
+          <div>
+            <div class="ph-title">Redirect Guard</div>
+            <div class="ph-sub">Schutz vor Weiterleitungen</div>
+          </div>
+        </div>
+        <div class="toggle-on"></div>
+      </div>
+      <div class="popup-stats">
+        <div class="stat"><div class="stat-n">7</div><div class="stat-l">Heute blockiert</div></div>
+        <div class="stat-div"></div>
+        <div class="stat"><div class="stat-n">142</div><div class="stat-l">Gesamt blockiert</div></div>
+      </div>
+      <div class="popup-section">
+        <div class="ps-label">⚡ Empfindlichkeit</div>
+        <div class="pills">
+          <div class="pill">Niedrig</div>
+          <div class="pill active">Mittel</div>
+          <div class="pill">Hoch</div>
+        </div>
+      </div>
+      <div class="popup-section">
+        <div class="ps-label">🛡️ Whitelist <span style="color:#484f58;font-size:9px;margin-left:4px">2 Domains</span></div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="background:#0d1117;border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:5px 8px;font-size:10px;display:flex;justify-content:space-between;">
+            <span>youtube.com</span><span style="color:#484f58">&#x2715;</span>
+          </div>
+          <div style="background:#0d1117;border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:5px 8px;font-size:10px;display:flex;justify-content:space-between;">
+            <span>twitch.tv</span><span style="color:#484f58">&#x2715;</span>
+          </div>
+        </div>
+      </div>
+      <div class="popup-footer">
+        <span class="ver">Redirect Guard v1.2.0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT: Features -->
+<div class="right">
+  <div class="hero">
+    <div class="hero-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 2L4 5.5v6C4 16 7.4 20.5 12 22c4.6-1.5 8-6 8-10.5v-6L12 2z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Redirect Guard</h1>
+      <p>Blockiert verdächtige Weiterleitungen automatisch &amp; schließt betroffene Tabs sofort.</p>
+    </div>
+  </div>
+
+  <div class="features">
+    <div class="feat">
+      <div class="feat-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </div>
+      <div>
+        <h3>Sofortiges Tab-Schließen</h3>
+        <p>Blockierte Seiten werden automatisch geschlossen – keine Wartezeit.</p>
+      </div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 8v4l3 3"/></svg>
+      </div>
+      <div>
+        <h3>Echtzeit-Schutz</h3>
+        <p>Erkennt JavaScript-Redirects, Server-Redirects &amp; History-API-Hijacking.</p>
+      </div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      </div>
+      <div>
+        <h3>20+ Scam-Netzwerke</h3>
+        <p>Bekannte Werbenetzwerke &amp; Click-Farms sind bereits geblockt.</p>
+      </div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      </div>
+      <div>
+        <h3>100% Privat</h3>
+        <p>Keine Datensammlung, kein Tracking – alles läuft lokal auf deinem Gerät.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-bar">
+    <div class="badge">
+      <div class="badge-dot"></div>
+      Aktiv &amp; schützt deinen Browser
+    </div>
+    <div class="tags">
+      <div class="tag">Chrome</div>
+      <div class="tag">Edge</div>
+      <div class="tag">Manifest V3</div>
+      <div class="tag">Open Source</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
