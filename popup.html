@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirect Guard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/popup.css">
+</head>
+<body>
+  <div class="popup-container">
+
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="header-left">
+        <div class="shield-icon">
+          <div class="shield-body">
+            <div class="shield-check"></div>
+          </div>
+        </div>
+        <div class="header-text">
+          <h1>Redirect Guard</h1>
+          <span class="header-subtitle">Schutz vor Weiterleitungen</span>
+        </div>
+      </div>
+      <div class="toggle-wrapper">
+        <label class="toggle-switch" for="toggle-enabled">
+          <input type="checkbox" id="toggle-enabled" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </header>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+      <div class="stat-card">
+        <span class="stat-number" id="stats-today">0</span>
+        <span class="stat-label">Heute blockiert</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-card">
+        <span class="stat-number" id="stats-total">0</span>
+        <span class="stat-label">Gesamt blockiert</span>
+      </div>
+    </section>
+
+    <!-- Sensitivity Slider -->
+    <section class="section sensitivity-section">
+      <div class="section-header">
+        <span class="section-icon">⚡</span>
+        <h2>Empfindlichkeit</h2>
+      </div>
+      <div class="slider-container">
+        <input type="range" id="sensitivity-slider" min="0" max="2" value="1" step="1">
+        <div class="slider-labels">
+          <span class="slider-label" data-value="0">Niedrig</span>
+          <span class="slider-label active" data-value="1">Mittel</span>
+          <span class="slider-label" data-value="2">Hoch</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Whitelist Section -->
+    <section class="section whitelist-section">
+      <div class="section-header">
+        <span class="section-icon">🛡️</span>
+        <h2>Whitelist</h2>
+        <span class="whitelist-count" id="whitelist-count">0</span>
+      </div>
+      <div class="whitelist-list" id="whitelist-list">
+        <div class="whitelist-empty" id="whitelist-empty">
+          <span class="empty-icon">✨</span>
+          <span>Keine Domains auf der Whitelist</span>
+        </div>
+      </div>
+      <div class="whitelist-input-row">
+        <input
+          type="text"
+          id="whitelist-input"
+          placeholder="z.B. beispiel.de"
+          spellcheck="false"
+          autocomplete="off"
+        >
+        <button id="whitelist-add-btn" title="Domain hinzufügen">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="popup-footer">
+      <span class="version-label">Redirect Guard v1.0.0</span>
+    </footer>
+
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
