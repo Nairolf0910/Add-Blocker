@@ -1,7 +1,7 @@
 /**
  * Redirect Guard – Background Service Worker
  * Erkennt und blockiert verdächtige Weiterleitungen in Chrome & Edge.
- * v1.1.0 – Edge-Whitelist, erweiterte Scam-Muster, verbesserte Popup-Logik
+ * Version: 1.1.0
  */
 
 // ─── State ────────────────────────────────────────────────────────────
@@ -11,18 +11,30 @@ const tempAllowList = new Map();  // tabId → Set<url> (einmalige Erlaubnisse)
 const REDIRECT_CHAIN_THRESHOLD_MS = 3000;
 const REDIRECT_CHAIN_MAX = 2;
 
-// Bekannte Scam/Ad-URL-Muster (erweitert v1.1)
+// Bekannte Scam/Ad-URL-Muster (erweitert)
 const SUSPICIOUS_PATTERNS = [
   /\.top\//i,
   /\.xyz\//i,
   /\.click\//i,
   /\.buzz\//i,
   /\.gdn\//i,
+  /\.loan\//i,
+  /\.win\//i,
+  /\.bid\//i,
+  /\.stream\//i,
+  /\.review\//i,
+  /\.trade\//i,
+  /\.accountant\//i,
   /\/afu\./i,
   /\/click\?/i,
   /\/redirect\?/i,
   /\/go\?/i,
   /\/out\?/i,
+  /\/track(ing)?\//i,
+  /\/redir(ect)?\//i,
+  /\/cpa\//i,
+  /\/aff(iliate)?\//i,
+  /\?.*utm_.*&.*redirect/i,
   /popunder/i,
   /popads/i,
   /trafficjunky/i,
@@ -46,72 +58,52 @@ const SUSPICIOUS_PATTERNS = [
   /shorte\.st/i,
   /sh\.st/i,
   /linkbucks/i,
-  /\/track(ing)?\//i,
-  /\/redir(ect)?\//i,
-  /\?.*utm_.*&.*redirect/i,
-  /\/cpa\//i,
-  /\/aff(iliate)?\//i,
-  // Neu in v1.1
-  /\.loan\//i,
-  /\.win\//i,
-  /\.bid\//i,
-  /\.stream\//i,
-  /\.party\//i,
-  /\.review\//i,
-  /\.trade\//i,
-  /\.science\//i,
-  /clkmon/i,
-  /clkrev/i,
-  /traffichunt/i,
-  /zeroredirect/i,
-  /go2cloud/i,
-  /revcontent/i,
-  /mgid\.com/i,
-  /advertisertag/i,
-  /adnxs\.com/i,
-  /doublepimp/i,
-  /smartredirect/i,
-  /clicksfly/i,
   /ouo\.io/i,
   /exe\.io/i,
   /fc\.lc/i,
+  /za\.gl/i,
+  /cut-urls\.com/i,
+  /earnow\.online/i,
+  /traffboost/i,
+  /adfly/i,
+  /linkvertise/i,
+  /rekonise/i,
+  /socialwolvez/i,
+  /loot-link/i,
+  /direct-link/i,
+  /cuty\.io/i,
   /shrinkme\.io/i,
-  /gplinks\.co/i,
+  /gplinks/i,
+  /techysuccess/i,
+  /mtweb\.co/i,
 ];
 
-// Domains die immer erlaubt sind (Chrome & Edge kompatibel, v1.1 ergänzt)
+// Domains die immer erlaubt sind
 const BUILTIN_WHITELIST = [
-  // Google
   'google.com', 'google.de', 'googleapis.com', 'google.co.uk',
-  'google.fr', 'google.it', 'google.es', 'gstatic.com',
-  // Microsoft & Edge
-  'microsoft.com', 'live.com', 'microsoftonline.com', 'bing.com',
-  'msn.com', 'office.com', 'office365.com', 'outlook.com',
-  'windowsupdate.com', 'azure.com', 'azurewebsites.net',
-  'microsoftedge.com', 'edge.microsoft.com',
-  // GitHub
-  'github.com', 'githubusercontent.com', 'github.io',
-  // Video
-  'youtube.com', 'youtu.be', 'vimeo.com', 'twitch.tv',
-  // Social
-  'facebook.com', 'instagram.com', 'twitter.com', 'x.com',
-  'linkedin.com', 'tiktok.com', 'pinterest.com',
-  // Shopping
-  'amazon.com', 'amazon.de', 'amazon.co.uk', 'ebay.com', 'ebay.de',
-  // Payment
-  'paypal.com', 'stripe.com', 'klarna.com',
-  // Apple
+  'microsoft.com', 'live.com', 'microsoftonline.com', 'office.com',
+  'windows.com', 'bing.com', 'msn.com', 'outlook.com',
+  'github.com', 'githubusercontent.com', 'githubassets.com',
+  'youtube.com', 'youtu.be',
+  'facebook.com', 'instagram.com', 'whatsapp.com',
+  'twitter.com', 'x.com',
+  'amazon.com', 'amazon.de', 'amazon.co.uk',
+  'paypal.com',
   'apple.com', 'icloud.com',
-  // Infrastructure
-  'cloudflare.com', 'fastly.com', 'akamai.com',
-  // Communities
-  'reddit.com', 'wikipedia.org', 'stackoverflow.com',
-  'stackexchange.com', 'quora.com', 'medium.com',
-  // Dev
-  'mozilla.org', 'w3.org', 'npmjs.com', 'docker.com',
-  'netlify.com', 'vercel.com', 'heroku.com',
-  // News (DE)
-  'spiegel.de', 'zeit.de', 'faz.net', 'bbc.com', 'cnn.com',
+  'cloudflare.com',
+  'reddit.com',
+  'wikipedia.org',
+  'stackoverflow.com',
+  'mozilla.org',
+  'w3.org',
+  'netflix.com',
+  'spotify.com',
+  'twitch.tv',
+  'discord.com',
+  'linkedin.com',
+  'ebay.de', 'ebay.com',
+  'zalando.de',
+  'otto.de',
 ];
 
 // ─── Hilfsfunktionen ──────────────────────────────────────────────────
@@ -136,13 +128,13 @@ function isInternalUrl(url) {
   return url.startsWith('chrome://') ||
          url.startsWith('chrome-extension://') ||
          url.startsWith('edge://') ||
-         url.startsWith('ms-browser-extension://') ||
          url.startsWith('extension://') ||
          url.startsWith('about:') ||
          url.startsWith('data:') ||
          url.startsWith('blob:') ||
          url.startsWith('javascript:') ||
-         url.startsWith('moz-extension://');
+         url.startsWith('moz-extension://') ||
+         url.startsWith('ms-browser-extension://');
 }
 
 async function getSettings() {
@@ -235,10 +227,12 @@ async function isRedirectSuspicious(tabId, url, sourceUrl) {
   const sensitivity = settings.sensitivity || 'medium';
   let reasons = [];
 
+  // 1. Bekannte Scam-Muster
   if (matchesSuspiciousPattern(url)) {
     reasons.push('URL enthält bekannte Werbe-/Scam-Muster');
   }
 
+  // 2. Redirect-Kette
   const recentDomainChanges = state.navigations
     .filter(n => n.domain !== sourceDomain)
     .length;
@@ -247,16 +241,13 @@ async function isRedirectSuspicious(tabId, url, sourceUrl) {
     reasons.push(`${recentDomainChanges} Weiterleitungen in ${REDIRECT_CHAIN_THRESHOLD_MS / 1000}s erkannt`);
   }
 
+  // 3. Sensitivity-spezifische Prüfungen
   if (sensitivity === 'high') {
     if (reasons.length === 0) {
       reasons.push('Domain-Wechsel erkannt (Hohe Empfindlichkeit)');
     }
   } else if (sensitivity === 'medium') {
-    const suspiciousTLDs = [
-      '.top', '.xyz', '.click', '.buzz', '.gdn',
-      '.loan', '.win', '.bid', '.stream',
-      '.party', '.review', '.trade', '.science',
-    ];
+    const suspiciousTLDs = ['.top', '.xyz', '.click', '.buzz', '.gdn', '.loan', '.win', '.bid', '.stream', '.review', '.trade'];
     if (suspiciousTLDs.some(tld => domain.endsWith(tld))) {
       reasons.push('Verdächtige Domain-Endung');
     }
@@ -342,41 +333,35 @@ chrome.webNavigation.onCommitted.addListener(async (details) => {
   state.lastDomain = extractDomain(details.url);
 });
 
-// ─── Neue Tabs/Popups blockieren (verbessert v1.1) ────────────────────
+// ─── Neue Tabs/Popups blockieren ─────────────────────────────────────
 
 chrome.webNavigation.onCreatedNavigationTarget.addListener(async (details) => {
   const settings = await getSettings();
   if (!settings.enabled) return;
 
-  const sourceState = details.sourceTabId ? getTabState(details.sourceTabId) : null;
-  const sourceUrl = sourceState?.lastUrl || '';
-  const sourceDomain = extractDomain(sourceUrl);
+  const sourceDomain = extractDomain(details.sourceTabId ?
+    (getTabState(details.sourceTabId).lastUrl || '') : '');
   const targetDomain = extractDomain(details.url);
 
   if (!targetDomain || isInternalUrl(details.url)) return;
-  if (await isDomainWhitelisted(targetDomain)) return;
 
-  const isSuspiciousPattern = matchesSuspiciousPattern(details.url);
-  const isDomainChange = sourceDomain && extractRootDomain(sourceDomain) !== extractRootDomain(targetDomain);
-  const isHighSensitivity = settings.sensitivity === 'high';
+  if (sourceDomain && sourceDomain !== targetDomain) {
+    if (await isDomainWhitelisted(targetDomain)) return;
 
-  if (isSuspiciousPattern || (isDomainChange && isHighSensitivity)) {
-    const reason = isSuspiciousPattern
-      ? 'Verdächtiger neuer Tab/Popup erkannt (bekanntes Muster)'
-      : 'Neuer Tab zu fremder Domain blockiert (Hohe Empfindlichkeit)';
+    if (matchesSuspiciousPattern(details.url)) {
+      const blockedPageUrl = chrome.runtime.getURL('blocked.html') +
+        '?url=' + encodeURIComponent(details.url) +
+        '&source=' + encodeURIComponent('Neuer Tab von ' + sourceDomain) +
+        '&reason=' + encodeURIComponent('Verdächtiger neuer Tab/Popup erkannt') +
+        '&tabId=' + details.tabId;
 
-    const blockedPageUrl = chrome.runtime.getURL('blocked.html') +
-      '?url=' + encodeURIComponent(details.url) +
-      '&source=' + encodeURIComponent(sourceDomain ? 'Neuer Tab von ' + sourceDomain : 'Unbekannt') +
-      '&reason=' + encodeURIComponent(reason) +
-      '&tabId=' + details.tabId;
-
-    try {
-      await chrome.tabs.update(details.tabId, { url: blockedPageUrl });
-      await incrementStats();
-      await updateBadge();
-    } catch (e) {
-      console.error('[Redirect Guard] Fehler beim Blockieren:', e);
+      try {
+        await chrome.tabs.update(details.tabId, { url: blockedPageUrl });
+        await incrementStats();
+        await updateBadge();
+      } catch (e) {
+        console.error('[Redirect Guard] Fehler beim Blockieren:', e);
+      }
     }
   }
 });

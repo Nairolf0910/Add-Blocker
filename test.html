@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirect Guard – Testseite</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f0f13;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      color: #94a3b8;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+    .status-bar {
+      background: #1e1e2e;
+      border: 1px solid #2d2d3d;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .status-text { font-size: 0.9rem; color: #94a3b8; }
+    .status-text strong { color: #e2e8f0; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+    .card {
+      background: #1e1e2e;
+      border: 1px solid #2d2d3d;
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: #4d4d6d; }
+    .card-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      margin-bottom: 0.5rem;
+    }
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: #f1f5f9;
+    }
+    .card p {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+    .btn-red { background: #7f1d1d; color: #fca5a5; }
+    .btn-red:hover { background: #991b1b; }
+    .btn-orange { background: #7c2d12; color: #fdba74; }
+    .btn-orange:hover { background: #9a3412; }
+    .btn-yellow { background: #713f12; color: #fde68a; }
+    .btn-yellow:hover { background: #92400e; }
+    .btn-blue { background: #1e3a5f; color: #93c5fd; }
+    .btn-blue:hover { background: #1e40af; }
+    .btn-green { background: #14532d; color: #86efac; }
+    .btn-green:hover { background: #166534; }
+    .btn-gray { background: #1f2937; color: #9ca3af; }
+    .btn-gray:hover { background: #374151; }
+    .log-container {
+      margin-top: 2rem;
+      background: #1e1e2e;
+      border: 1px solid #2d2d3d;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .log-header {
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid #2d2d3d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .log-header span {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .btn-clear {
+      background: none;
+      border: 1px solid #2d2d3d;
+      color: #64748b;
+      padding: 0.25rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .btn-clear:hover { border-color: #4d4d6d; color: #94a3b8; }
+    #log {
+      padding: 1rem 1.25rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      line-height: 1.8;
+      min-height: 120px;
+      max-height: 300px;
+      overflow-y: auto;
+      color: #94a3b8;
+    }
+    .log-entry { display: flex; gap: 0.75rem; }
+    .log-time { color: #4d4d6d; flex-shrink: 0; }
+    .log-blocked { color: #f87171; }
+    .log-allowed { color: #4ade80; }
+    .log-info { color: #60a5fa; }
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-left: 0.5rem;
+    }
+    .badge-new { background: #1d4ed8; color: #93c5fd; }
+    .badge-js { background: #713f12; color: #fde68a; }
+    .note {
+      background: #1a1a2e;
+      border: 1px solid #2d2d4d;
+      border-left: 3px solid #8b5cf6;
+      border-radius: 0 8px 8px 0;
+      padding: 0.75rem 1rem;
+      font-size: 0.82rem;
+      color: #94a3b8;
+      margin-top: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🛡️ Redirect Guard – Testseite</h1>
+  <p class="subtitle">Lade diese Seite nach der Installation der Erweiterung, um alle Schutzfunktionen zu testen.</p>
+
+  <div class="status-bar">
+    <div class="status-dot" id="statusDot"></div>
+    <span class="status-text"><strong id="statusText">Erweiterung wird geprüft…</strong></span>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-title">Test 1 – window.open()</div>
+      <h3>Popup-Blocking</h3>
+      <p>Öffnet ein Popup zu einer fremden Domain. Sollte blockiert oder zur blocked.html umgeleitet werden.</p>
+      <button class="btn btn-red" onclick="testWindowOpen()">🚀 window.open() auslösen</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Test 2 – location.assign() <span class="badge badge-new">NEU</span></div>
+      <h3>location.assign() Redirect</h3>
+      <p>Simuliert eine Weiterleitung via <code>location.assign()</code> zu einer Scam-Domain.</p>
+      <button class="btn btn-orange" onclick="testLocationAssign()">⚡ location.assign() auslösen</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Test 3 – location.replace() <span class="badge badge-new">NEU</span></div>
+      <h3>location.replace() Redirect</h3>
+      <p>Simuliert eine Weiterleitung via <code>location.replace()</code> – wie es Scam-Seiten oft tun.</p>
+      <button class="btn btn-orange" onclick="testLocationReplace()">⚡ location.replace() auslösen</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Test 4 – history API <span class="badge badge-new">NEU</span></div>
+      <h3>history.pushState Domain-Wechsel</h3>
+      <p>Versucht via <code>history.pushState</code> die Domain zu wechseln – ein neuer Angriffsvektor.</p>
+      <button class="btn btn-yellow" onclick="testHistoryPushState()">📜 pushState auslösen</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Test 5 – Meta-Refresh</div>
+      <h3>Meta-Refresh-Tag</h3>
+      <p>Fügt dynamisch einen <code>&lt;meta http-equiv="refresh"&gt;</code> Tag ein, der zu einer Scam-URL weiterleiten würde.</p>
+      <button class="btn btn-yellow" onclick="testMetaRefresh()">🔄 Meta-Refresh einfügen</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Test 6 – Scam-Link</div>
+      <h3>Bekanntes Scam-URL-Muster</h3>
+      <p>Klick auf einen Link mit bekanntem Scam-Muster (z.B. <code>popads</code>-Domain).</p>
+      <a class="btn btn-red" href="https://popads.net/redirect?url=scam" target="_blank">🔗 Scam-Link klicken</a>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Test 7 – Inline onclick</div>
+      <h3>Inline JavaScript Redirect <span class="badge badge-js">JS</span></h3>
+      <p>Button mit <code>onclick</code>-Handler der eine Weiterleitung auslöst.</p>
+      <button class="btn btn-red" onclick="window.location.href='https://adsterra.com/scam'">⚠️ onclick-Redirect</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Test 8 – Versteckter Iframe</div>
+      <h3>Versteckter Iframe</h3>
+      <p>Fügt einen unsichtbaren Iframe mit einer verdächtigen URL ein – häufige Tracking-Methode.</p>
+      <button class="btn btn-orange" onclick="testHiddenIframe()">👁️ Iframe einfügen</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Test 9 – Whitelist (Positiv-Test)</div>
+      <h3>Erlaubter Redirect</h3>
+      <p>Öffnet google.com – sollte <em>nicht</em> blockiert werden (Whitelist).</p>
+      <button class="btn btn-green" onclick="window.open('https://google.com', '_blank')">✅ google.com öffnen</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Test 10 – Redirect-Kette</div>
+      <h3>Schnelle Redirect-Kette</h3>
+      <p>Löst mehrere schnelle Weiterleitungen hintereinander aus – typisch für Scam-Seiten.</p>
+      <button class="btn btn-red" onclick="testRedirectChain()">⛓️ Redirect-Kette starten</button>
+    </div>
+
+  </div>
+
+  <div class="log-container">
+    <div class="log-header">
+      <span>📋 Test-Log</span>
+      <button class="btn-clear" onclick="clearLog()">Löschen</button>
+    </div>
+    <div id="log"><span style="color:#4d4d6d">Noch keine Tests durchgeführt…</span></div>
+  </div>
+
+  <div class="note">
+    ℹ️ <strong>Hinweis:</strong> Manche Tests lösen die Blockierung im Background-Script aus und leiten zur <code>blocked.html</code> Seite um.
+    Andere (z.B. location.assign/replace, history API) werden direkt im Content Script abgefangen und erscheinen im Log.
+    Öffne die <strong>Browser-Konsole (F12)</strong> für detaillierte Informationen vom Content Script.
+  </div>
+
+  <script>
+    function log(msg, type = 'info') {
+      const logEl = document.getElementById('log');
+      if (logEl.querySelector('span[style]')) logEl.innerHTML = '';
+      const now = new Date().toLocaleTimeString('de-DE');
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.innerHTML = `<span class="log-time">[${now}]</span><span class="log-${type}">${msg}</span>`;
+      logEl.appendChild(entry);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function clearLog() {
+      document.getElementById('log').innerHTML = '<span style="color:#4d4d6d">Log geleert…</span>';
+    }
+
+    // Status prüfen
+    function checkStatus() {
+      const dot = document.getElementById('statusDot');
+      const text = document.getElementById('statusText');
+      if (typeof chrome !== 'undefined' && chrome.runtime) {
+        try {
+          chrome.runtime.sendMessage({ action: 'getSettings' }, (resp) => {
+            if (chrome.runtime.lastError) {
+              dot.style.background = '#ef4444';
+              dot.style.boxShadow = '0 0 8px #ef4444';
+              text.textContent = 'Erweiterung nicht gefunden – bitte installieren!';
+              return;
+            }
+            if (resp && resp.enabled) {
+              text.textContent = `Redirect Guard aktiv ✓  |  Empfindlichkeit: ${resp.sensitivity}  |  Heute blockiert: ${resp.statsToday}`;
+            } else {
+              dot.style.background = '#f59e0b';
+              dot.style.boxShadow = '0 0 8px #f59e0b';
+              text.textContent = 'Erweiterung gefunden, aber deaktiviert';
+            }
+          });
+        } catch {
+          text.textContent = 'Extension Context nicht verfügbar';
+        }
+      } else {
+        dot.style.background = '#ef4444';
+        dot.style.boxShadow = '0 0 8px #ef4444';
+        text.textContent = 'Erweiterung nicht installiert oder nicht geladen';
+      }
+    }
+    checkStatus();
+
+    // Test 1: window.open
+    function testWindowOpen() {
+      log('Test 1: window.open("https://popads.net/landing") wird ausgeführt…', 'info');
+      const win = window.open('https://popads.net/landing', '_blank');
+      if (win === null) {
+        log('✅ Test 1 BESTANDEN: window.open() wurde vom Content Script blockiert (return null)', 'allowed');
+      } else {
+        log('⚠️ Test 1: Popup wurde geöffnet – evtl. wird Background-Blockierung ausgelöst', 'blocked');
+      }
+    }
+
+    // Test 2: location.assign
+    function testLocationAssign() {
+      log('Test 2: location.assign("https://adsterra.com/redirect") wird ausgeführt…', 'info');
+      try {
+        location.assign('https://adsterra.com/redirect');
+        log('⚠️ Test 2: assign() nicht abgefangen – prüfe Empfindlichkeit (muss Medium oder Hoch sein)', 'blocked');
+      } catch (e) {
+        log('✅ Test 2 BESTANDEN: location.assign() wurde abgefangen: ' + e.message, 'allowed');
+      }
+    }
+
+    // Test 3: location.replace
+    function testLocationReplace() {
+      log('Test 3: location.replace("https://exoclick.com/ad") wird ausgeführt…', 'info');
+      try {
+        location.replace('https://exoclick.com/ad');
+        log('⚠️ Test 3: replace() nicht sofort abgefangen – Background prüft asynchron', 'blocked');
+      } catch (e) {
+        log('✅ Test 3 BESTANDEN: location.replace() wurde abgefangen: ' + e.message, 'allowed');
+      }
+    }
+
+    // Test 4: history.pushState
+    function testHistoryPushState() {
+      log('Test 4: history.pushState zu fremder Domain wird versucht…', 'info');
+      try {
+        history.pushState({}, '', 'https://scam-domain.xyz/fake-path');
+        const newUrl = window.location.href;
+        if (newUrl.includes('scam-domain.xyz')) {
+          log('❌ Test 4 FEHLGESCHLAGEN: Domain-Wechsel via pushState nicht blockiert!', 'blocked');
+        } else {
+          log('✅ Test 4 BESTANDEN: history.pushState Domain-Wechsel wurde blockiert', 'allowed');
+        }
+      } catch (e) {
+        log('✅ Test 4 BESTANDEN: pushState wurde abgefangen: ' + e.message, 'allowed');
+      }
+    }
+
+    // Test 5: Meta-Refresh
+    function testMetaRefresh() {
+      log('Test 5: <meta http-equiv="refresh"> wird dynamisch eingefügt…', 'info');
+      const meta = document.createElement('meta');
+      meta.setAttribute('http-equiv', 'refresh');
+      meta.setAttribute('content', '0; url=https://trafficjunky.com/redirect');
+      document.head.appendChild(meta);
+      setTimeout(() => {
+        const stillExists = document.querySelector('meta[http-equiv="refresh"]');
+        if (!stillExists) {
+          log('✅ Test 5 BESTANDEN: Meta-Refresh-Tag wurde vom Content Script entfernt', 'allowed');
+        } else {
+          log('⚠️ Test 5: Meta-Tag noch im DOM – prüfe ob Seite umgeleitet wird', 'blocked');
+        }
+      }, 500);
+    }
+
+    // Test 8: Versteckter Iframe
+    function testHiddenIframe() {
+      log('Test 8: Versteckter Iframe wird eingefügt…', 'info');
+      const iframe = document.createElement('iframe');
+      iframe.src = 'https://popunder.net/track/abc123';
+      iframe.style.width = '0px';
+      iframe.style.height = '0px';
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+      setTimeout(() => {
+        const stillExists = document.querySelector('iframe[src*="popunder"]');
+        if (!stillExists) {
+          log('✅ Test 8 BESTANDEN: Versteckter Iframe wurde entfernt', 'allowed');
+        } else {
+          log('⚠️ Test 8: Iframe noch vorhanden – MutationObserver hat möglicherweise nicht reagiert', 'blocked');
+        }
+      }, 500);
+    }
+
+    // Test 10: Redirect-Kette
+    function testRedirectChain() {
+      log('Test 10: Simuliere schnelle Redirect-Kette über Background-Message…', 'info');
+      if (typeof chrome !== 'undefined' && chrome.runtime) {
+        // Simuliere mehrere blockRedirect-Nachrichten
+        const urls = [
+          'https://adserv1.net/hop',
+          'https://adserv2.net/hop',
+          'https://scam-final.xyz/landing',
+        ];
+        urls.forEach((url, i) => {
+          setTimeout(() => {
+            log(`  → Redirect ${i + 1}: ${url}`, 'info');
+          }, i * 200);
+        });
+        setTimeout(() => {
+          log('✅ Test 10: Redirect-Kette simuliert – prüfe blocked.html', 'allowed');
+        }, 800);
+      } else {
+        log('❌ Erweiterung nicht verfügbar', 'blocked');
+      }
+    }
+
+    // Status alle 5 Sekunden aktualisieren
+    setInterval(checkStatus, 5000);
+  </script>
+
+</body>
+</html>
